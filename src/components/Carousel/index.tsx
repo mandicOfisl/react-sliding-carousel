@@ -142,6 +142,7 @@ export default class Carousel extends React.Component<
     animationHandler: 'slide',
     swipeAnimationHandler: slideSwipeAnimationHandler,
     stopSwipingHandler: slideStopSwipingHandler,
+    containerTabIndex: 0,
   };
 
   constructor(props: CarouselProps) {
@@ -833,7 +834,11 @@ export default class Carousel extends React.Component<
         aria-label={this.props.ariaLabel}
         className={klass.ROOT(this.props.className)}
         ref={this.setCarouselWrapperRef}
-        tabIndex={this.props.useKeyboardArrows ? 0 : undefined}
+        tabIndex={
+          this.props.useKeyboardArrows
+            ? this.props.containerTabIndex
+            : undefined
+        }
       >
         <div
           className={klass.CAROUSEL(true)}

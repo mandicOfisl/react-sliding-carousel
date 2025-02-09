@@ -88,6 +88,7 @@ export interface CarouselProps {
   animationHandler: 'slide' | 'fade' | AnimationHandler;
   swipeAnimationHandler: SwipeAnimationHandler;
   stopSwipingHandler: StopSwipingHandler;
+  containerTabIndex: number;
 }
 
 export interface CarouselState {
