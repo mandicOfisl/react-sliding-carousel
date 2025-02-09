@@ -1,4 +1,4 @@
-import { Children } from 'react';
+import React, { Children } from 'react';
 import CSSTranslate from '../../CSSTranslate';
 import { getPosition, setPosition } from './utils';
 import {

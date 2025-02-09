@@ -24,7 +24,7 @@ export default class Carousel extends React.Component<
   private listRef?: HTMLElement | HTMLUListElement;
   private itemsRef?: HTMLElement[];
   private timer?: ReturnType<typeof setTimeout>;
-  private animationHandler: AnimationHandler;
+  private readonly animationHandler: AnimationHandler;
 
   static displayName = 'Carousel';
 
@@ -368,14 +368,10 @@ export default class Carousel extends React.Component<
       return false;
     }
 
-    if (
+    return (
       getDocument().activeElement === this.carouselWrapperRef ||
       this.carouselWrapperRef.contains(getDocument().activeElement)
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   };
 
   navigateWithKeyboard = (e: KeyboardEvent) => {
@@ -521,9 +517,7 @@ export default class Carousel extends React.Component<
    * @param fromSwipe
    */
   decrement = (positions = 1) => {
-    this.moveTo(
-      this.state.selectedItem - (typeof positions === 'number' ? positions : 1)
-    );
+    this.moveTo(this.state.selectedItem - positions);
   };
 
   /**
@@ -532,9 +526,7 @@ export default class Carousel extends React.Component<
    * @param fromSwipe
    */
   increment = (positions = 1) => {
-    this.moveTo(
-      this.state.selectedItem + (typeof positions === 'number' ? positions : 1)
-    );
+    this.moveTo(this.state.selectedItem + positions);
   };
 
   /**
@@ -564,7 +556,7 @@ export default class Carousel extends React.Component<
 
     // don't reset auto play when stop on hover is enabled, doing so will trigger a call to auto play more than once
     // and will result in the interval function not being cleared correctly.
-    if (this.state.autoPlay && this.state.isMouseEntered === false) {
+    if (this.state.autoPlay && !this.state.isMouseEntered) {
       this.resetAutoPlay();
     }
   };

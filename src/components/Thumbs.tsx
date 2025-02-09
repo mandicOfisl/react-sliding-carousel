@@ -1,6 +1,6 @@
 import React, { Component, Children } from 'react';
 import klass from '../cssClasses';
-import { outerWidth } from '../dimensions';
+import { outerWidth } from '~dimensions';
 import CSSTranslate from '../CSSTranslate';
 // @ts-ignore
 import Swipe from 'react-easy-swipe';
@@ -307,8 +307,6 @@ export default class Thumbs extends Component<Props, State> {
     // show right arrow
     const hasNext =
       this.state.showArrows && this.state.firstItem < this.state.lastPosition;
-    // obj to hold the transformations and styles
-    let itemListStyles = {};
 
     const currentPosition = -this.state.firstItem * (this.state.itemSize || 0);
 
@@ -316,7 +314,8 @@ export default class Thumbs extends Component<Props, State> {
 
     const transitionTime = this.props.transitionTime + 'ms';
 
-    itemListStyles = {
+    // obj to hold the transformations and styles
+    const itemListStyles = {
       WebkitTransform: transformProp,
       MozTransform: transformProp,
       MsTransform: transformProp,

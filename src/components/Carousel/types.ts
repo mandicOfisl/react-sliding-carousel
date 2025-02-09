@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface AnimationHandlerResponse {
   itemListStyle?: React.CSSProperties;
   slideStyle?: React.CSSProperties;
