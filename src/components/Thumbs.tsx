@@ -12,7 +12,7 @@ const isKeyboardEvent = (
 
 export interface Props {
   axis: 'horizontal' | 'vertical';
-  children: React.ReactChild[];
+  children: React.ReactNode[];
   labels: {
     leftArrow: string;
     rightArrow: string;

@@ -91,33 +91,37 @@ export default class Carousel extends React.Component<
     renderItem: (item: React.ReactNode) => {
       return item;
     },
-    renderThumbs: (children: React.ReactChild[]) => {
-      const images = Children.map<
-        React.ReactChild | undefined,
-        React.ReactChild
-      >(children, (item) => {
-        let img: React.ReactChild | undefined = item;
+    // @ts-ignore
+    renderThumbs: (children: React.ReactNode[]) => {
+      const images = Children.map<React.ReactNode | undefined, React.ReactNode>(
+        children,
+        (item) => {
+          let img: React.ReactNode | undefined = item;
 
-        // if the item is not an image, try to find the first image in the item's children.
-        if (
-          (item as React.ReactElement<{ children: React.ReactChild[] }>)
-            .type !== 'img'
-        ) {
-          img = (Children.toArray(
-            (item as React.ReactElement).props.children
-          ) as React.ReactChild[]).find(
-            (children) => (children as React.ReactElement).type === 'img'
-          );
+          // if the item is not an image, try to find the first image in the item's children.
+          if (
+            (item as React.ReactElement<{ children: React.ReactNode[] }>)
+              .type !== 'img'
+          ) {
+            img = (
+              Children.toArray(
+                // @ts-ignore
+                (item as React.ReactElement).props.children
+              ) as React.ReactNode[]
+            ).find(
+              (children) => (children as React.ReactElement).type === 'img'
+            );
+          }
+
+          if (!img) {
+            return undefined;
+          }
+
+          return img;
         }
+      );
 
-        if (!img) {
-          return undefined;
-        }
-
-        return img;
-      });
-
-      if (images.filter((image) => image).length === 0) {
+      if (images && images.filter((image) => image).length === 0) {
         console.warn(
           `No images found! Can't build the thumb list without images. If you don't need thumbs, set showThumbs={false} in the Carousel. Note that it's not possible to get images rendered inside custom components. More info at https://github.com/leandrowd/react-responsive-carousel/blob/master/TROUBLESHOOTING.md`
         );
@@ -143,6 +147,7 @@ export default class Carousel extends React.Component<
     swipeAnimationHandler: slideSwipeAnimationHandler,
     stopSwipingHandler: slideStopSwipingHandler,
     containerTabIndex: 0,
+    selectionFollowsSwipe: false,
   };
 
   constructor(props: CarouselProps) {
@@ -163,6 +168,7 @@ export default class Carousel extends React.Component<
       slideStyle: {},
       selectedStyle: {},
       prevStyle: {},
+      swipedItems: 0,
     };
 
     this.animationHandler =
@@ -195,11 +201,13 @@ export default class Carousel extends React.Component<
     }
 
     if (prevState.swiping && !this.state.swiping) {
-      // We stopped swiping, ensure we are heading to the new/current slide and not stuck
+      if (!this.props.selectionFollowsSwipe) {
+        // We stopped swiping, ensure we are heading to the new/current slide and not stuck
 
-      this.setState({
-        ...this.props.stopSwipingHandler(this.props, this.state),
-      });
+        this.setState({
+          ...this.props.stopSwipingHandler(this.props, this.state),
+        });
+      }
     }
 
     if (
@@ -570,7 +578,11 @@ export default class Carousel extends React.Component<
   };
 
   onSwipeForward = () => {
-    this.increment(1);
+    if (!this.props.selectionFollowsSwipe) {
+      this.increment(1);
+    } else {
+      this.increment(Math.abs(this.state.swipedItems));
+    }
 
     if (this.props.emulateTouch) {
       this.setState({ cancelClick: true });
@@ -578,20 +590,23 @@ export default class Carousel extends React.Component<
   };
 
   onSwipeBackwards = () => {
-    this.decrement(1);
+    if (!this.props.selectionFollowsSwipe) {
+      this.decrement(1);
+    } else {
+      this.decrement(Math.abs(this.state.swipedItems));
+    }
 
     if (this.props.emulateTouch) {
       this.setState({ cancelClick: true });
     }
   };
 
-  changeItem = (newIndex: number) => (
-    e: React.MouseEvent | React.KeyboardEvent
-  ) => {
-    if (!isKeyboardEvent(e) || e.key === 'Enter') {
-      this.moveTo(newIndex);
-    }
-  };
+  changeItem =
+    (newIndex: number) => (e: React.MouseEvent | React.KeyboardEvent) => {
+      if (!isKeyboardEvent(e) || e.key === 'Enter') {
+        this.moveTo(newIndex);
+      }
+    };
 
   /**
    * This function is called when you want to 'select' a new item, or rather move to a 'selected' item
@@ -786,6 +801,9 @@ export default class Carousel extends React.Component<
       false;
 
     const itemsClone = this.renderItems(true);
+
+    if (!itemsClone) return null;
+
     const firstClone = itemsClone.shift();
     const lastClone = itemsClone.pop();
 

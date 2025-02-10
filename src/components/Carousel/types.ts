@@ -34,7 +34,7 @@ export interface CarouselProps {
   autoPlay?: boolean;
   centerMode?: boolean;
   centerSlidePercentage: number;
-  children?: React.ReactChild[];
+  children?: React.ReactNode[];
   className?: string;
   dynamicHeight?: boolean;
   emulateTouch?: boolean;
@@ -72,7 +72,7 @@ export interface CarouselProps {
     item: React.ReactNode,
     options?: { isSelected: boolean; isPrevious: boolean }
   ) => React.ReactNode;
-  renderThumbs: (children: React.ReactChild[]) => React.ReactChild[];
+  renderThumbs: (children: React.ReactNode[]) => React.ReactNode[];
   selectedItem: number;
   showArrows: boolean;
   showStatus: boolean;
@@ -91,6 +91,7 @@ export interface CarouselProps {
   swipeAnimationHandler: SwipeAnimationHandler;
   stopSwipingHandler: StopSwipingHandler;
   containerTabIndex: number;
+  selectionFollowsSwipe: boolean;
 }
 
 export interface CarouselState {
@@ -108,4 +109,5 @@ export interface CarouselState {
   slideStyle?: React.CSSProperties;
   selectedStyle?: React.CSSProperties;
   prevStyle?: React.CSSProperties;
+  swipedItems: number;
 }

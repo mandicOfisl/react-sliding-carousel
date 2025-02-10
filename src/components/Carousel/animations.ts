@@ -143,6 +143,16 @@ export const slideSwipeAnimationHandler: SwipeAnimationHandler = (
     returnStyles.itemListStyle = setPosition(position, props.axis);
   }
 
+  const numberOfItemsSwiped = calculateSwipedItems(
+    props.centerSlidePercentage,
+    state.itemSize,
+    axisDelta
+  );
+
+  if (props.selectionFollowsSwipe) {
+    setState({ swipedItems: numberOfItemsSwiped });
+  }
+
   //allows scroll if the swipe was within the tolerance
   if (hasMoved && !state.cancelClick) {
     setState({
@@ -215,3 +225,18 @@ export const fadeAnimationHandler: AnimationHandler = (
     prevStyle: { ...slideStyle },
   };
 };
+function calculateSwipedItems(
+  centerSlidePercentage: number,
+  itemSize: number,
+  axisDelta: number
+) {
+  const itemsShown = centerSlidePercentage
+    ? Math.round(100 / centerSlidePercentage)
+    : 1;
+
+  const deltaForItemChange = itemSize / itemsShown;
+
+  const itemsMoved = axisDelta / deltaForItemChange;
+
+  return Math.round(itemsMoved);
+}

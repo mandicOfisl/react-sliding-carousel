@@ -1,14 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { Carousel } from '~index';
+import { createRoot } from 'react-dom/client';
 
-import(
-  /* webpackChunkName: "carousel-component" */ './components/Carousel'
-).then(({ default: Carousel }) => {
-  const DemoCarousel = () => (
+const DemoCarousel = () => {
+  return (
     <Carousel
       showArrows
-      infiniteLoop
       autoPlay
+      centerMode={true}
+      centerSlidePercentage={33.333}
+      useKeyboardArrows={true}
+      containerTabIndex={-1}
+      selectionFollowsSwipe={true}
       emulateTouch
       onClickItem={(...args) => console.log('onClickItem', ...args)}
       onChange={(...args) => console.log('onChange', ...args)}
@@ -40,5 +43,12 @@ import(
       </div>
     </Carousel>
   );
-  ReactDOM.render(<DemoCarousel />, document.querySelector('.demo-carousel'));
-});
+};
+
+const container = document.querySelector('.demo-carousel');
+
+if (!container) throw new Error('Failed to find the root element');
+
+const root = createRoot(container);
+
+root.render(<DemoCarousel />);
