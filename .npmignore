@@ -25,3 +25,5 @@ yarn.lock
 .gitignore
 CNAME
 generate-changelog.js
+.idea
+yarn-error.log
