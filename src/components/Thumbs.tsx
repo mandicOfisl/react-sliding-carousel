@@ -1,6 +1,6 @@
 import React, { Component, Children } from 'react';
 import klass from '../cssClasses';
-import { outerWidth } from '~dimensions';
+import { outerWidth } from '../dimensions';
 import CSSTranslate from '../CSSTranslate';
 // @ts-ignore
 import Swipe from 'react-easy-swipe';
